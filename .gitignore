@@ -1,0 +1,7 @@
+# tool directories
+node_modules
+dist
+coverage
+
+# alfred files
+config.json
