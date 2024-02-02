@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import Alfred from './alfred';
 
 const main = async () => {

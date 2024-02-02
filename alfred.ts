@@ -330,6 +330,12 @@ class Alfred {
     let command = '';
 
     switch (this.arguments[0]) {
+      case 'status':
+        command = 'git status';
+
+        this.deleteArguments(1);
+
+        break;
       case 'pull':
         command = 'git pull';
 
