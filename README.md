@@ -4,7 +4,7 @@ Helps you handle multiple git repos more quickly and easily.
 
 ## Longer Description
 
-Guys. We live in 2024. When Marty visited the future, he now visited _nine
+Y'all. We live in 2024. When Marty visited the future, he now visited _nine
 years ago._ Cars are now out there driving. _Themselves_. We are _half a
 century_ removed from sending a man to another celestial body and without even
 blowing him up in the process. Why on Earth (heh), then, do I need to cd into
@@ -54,11 +54,12 @@ being on this list? Email me and I'll consider adding it!
 
 And with that, we come to the built-in commands. Here are the Alfred commands
 followed by a description of what they run. Most of these should be intuitive.
-Any command with an underscore in it can also be typed without the underscore for
-quicker access because if you're using this app you're clearly lazy and typing
-underscores is hard. Is that still too much? It is for me. So any multi-word
-command can be run by just typing the first letter of each word in the command.
-Laziness! So for example, `add-repo` can be typed as `addrepo` or just `ar`.
+Commands are case-insensitive because if you're using this app you're clearly
+lazy and typing in camel case is hard. Is that still too much? It is for me.
+So any multi-word command can be run by just typing the first letter of each
+word in the command. Laziness!
+
+As an example, `addRepo` can be typed as `addrepo` or just `ar`.
 
 - `pull` - Runs a `git pull`
 - `push` - Runs a `git push`
@@ -68,21 +69,19 @@ Laziness! So for example, `add-repo` can be typed as `addrepo` or just `ar`.
 - `status` - Runs a `git status`
 - `branch` or `branches` - Lists the branch(es) your repo(s) currently have
   checked out.
-- `list-repo` or `list-repos` - Lists all of your repo names and their locations.
-- `add-repo second-parameter` - Starts the process of adding a new repo by the
+- `listRepo` or `list-repos` - Lists all of your repo names and their locations.
+- `addRepo second-parameter` - Starts the process of adding a new repo by the
   name given in the second parameter. The location
   of the repo will be asked for and then added to
   your list of repos.
-- `repo-add-directory` - Searches all subdirectories of the second parameter for the .git
-  folder representative of a repository and automatically adds each
-  to the list of repos. This command uses the last segment of the path
-  as the repo name and falls back to the relative path when a duplicate
-  entry is found. The second parameter can be the absolute path to the directory
-  or a dot representing the current directory.
-- `delete-repo second-parameter` - Deletes the repo identified by second
-  parameter. If "all" is supplied, this deletes all
-  repositories.
-- `reset-config` - Deletes your config file and starts the config process from scratch.
+- `repoAddDirectory` - Searches all subdirectories of the second parameter for the .git folder
+  representative of a repository and automatically adds each to the list of repos. This command
+  uses the last segment of the path as the repo name and falls back to the relative path when a
+  duplicate entry is found. The second parameter can be the absolute path to the directory or a
+  dot representing the current directory.
+- `deleteRepo second-parameter` - Deletes the repo identified by second parameter. If "all" is
+  supplied, this deletes all repositories.
+- `resetConfig` - Deletes your config file and starts the config process from scratch.
 
 To send a custom command to any number of branches, just send it as your first
 parameter. Here's the important part to remember, though: if your custom command
@@ -118,7 +117,7 @@ So, since this is the examples section, let's say you need to send a
 `npm run build` to repos 2 and 4. Since the command is more than one word/has
 a space in it, here's how you would do it:
 
-`> alfred "gulp build" repo-2 repo-4`
+`> alfred "npm run build" repo-2 repo-4`
 
 See? Intuitive! Simple! Batman!
 

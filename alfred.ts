@@ -7,12 +7,15 @@ import * as os from 'os';
 import { exec } from 'child_process';
 
 const VERSION = '0.1.0';
+const DEFAULT_TITLE = 'Sir';
+const DEFAULT_NAME = 'Wayne';
+const CONFIG_FILE_NAME = 'alfredConfig.json';
 
 class Alfred {
   private settingsDirectory: string;
   private repoLocations: Record<string, string> = {};
-  private name: string = 'Wayne';
-  private title: string = 'sir';
+  private name: string = DEFAULT_NAME;
+  private title: string = DEFAULT_TITLE;
   private arguments: string[] = [];
 
   constructor() {
@@ -31,25 +34,23 @@ class Alfred {
 
     if (
       alfredDirectories.length > 1 &&
-      !fs.existsSync(path.join(this.settingsDirectory, 'alfredConfig.json'))
+      !fs.existsSync(path.join(this.settingsDirectory, CONFIG_FILE_NAME))
     ) {
       this.restoreSettings('alfred', VERSION);
     }
 
-    if (
-      !fs.existsSync(path.join(this.settingsDirectory, 'alfredConfig.json'))
-    ) {
+    if (!fs.existsSync(path.join(this.settingsDirectory, CONFIG_FILE_NAME))) {
       await this.config();
     } else {
       const configJson: ConfigJson = JSON.parse(
         fs.readFileSync(
-          path.join(this.settingsDirectory, 'alfredConfig.json'),
+          path.join(this.settingsDirectory, CONFIG_FILE_NAME),
           'utf8',
         ),
       );
       this.repoLocations = configJson.repos || {};
-      this.name = configJson.name || 'Wayne';
-      this.title = configJson.title || 'sir';
+      this.name = configJson.name || DEFAULT_NAME;
+      this.title = configJson.title || DEFAULT_TITLE;
     }
   }
 
@@ -105,9 +106,7 @@ class Alfred {
       process.exit(1);
     }
 
-    switch (this.arguments[0]) {
-      case 'list-repo':
-      case 'list-repos':
+    switch (this.arguments[0].toLowerCase()) {
       case 'listrepo':
       case 'listrepos':
       case 'lr':
@@ -121,7 +120,6 @@ class Alfred {
         console.log();
 
         process.exit(0);
-      case 'add-repo':
       case 'addrepo':
       case 'ar':
         if (this.secondArgumentMissing()) {
@@ -137,7 +135,6 @@ class Alfred {
         await this.addRepo();
 
         process.exit(0);
-      case 'delete-repo':
       case 'deleterepo':
       case 'deletrepo':
       case 'dr':
@@ -156,7 +153,7 @@ class Alfred {
         await this.deleteRepo();
 
         process.exit(0);
-      case 'repo-add-directory':
+      case 'repoadddirectory':
       case 'rad':
         if (this.secondArgumentMissing()) {
           console.log(
@@ -173,7 +170,7 @@ class Alfred {
         await this.repoAddDirectory();
 
         process.exit(0);
-      case 'reset-config':
+      case 'resetconfig':
       case 'rc':
         fs.unlinkSync(`${this.settingsDirectory}/alfredConfig.json`);
         await this.initialize();
@@ -223,7 +220,7 @@ class Alfred {
 
     console.log();
 
-    const configPath = path.join(this.settingsDirectory, 'alfredConfig.json');
+    const configPath = path.join(this.settingsDirectory, CONFIG_FILE_NAME);
 
     if (!fs.existsSync(configPath)) {
       console.log(chalk.red('Configuration file not found.'));
@@ -312,7 +309,7 @@ class Alfred {
   }
 
   private loadConfig(): any {
-    const configPath = path.join(this.settingsDirectory, 'alfredConfig.json');
+    const configPath = path.join(this.settingsDirectory, CONFIG_FILE_NAME);
 
     if (!fs.existsSync(configPath)) {
       return { repos: {} };
@@ -322,7 +319,7 @@ class Alfred {
   }
 
   private saveConfig(config: any): void {
-    const configPath = path.join(this.settingsDirectory, 'alfredConfig.json');
+    const configPath = path.join(this.settingsDirectory, CONFIG_FILE_NAME);
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
   }
 
@@ -475,13 +472,13 @@ class Alfred {
       const configPath = path.join(
         this.settingsDirectory,
         dir,
-        'alfredConfig.json',
+        CONFIG_FILE_NAME,
       );
 
       if (fs.existsSync(configPath)) {
         const destinationPath = path.join(
           this.settingsDirectory,
-          'alfredConfig.json',
+          CONFIG_FILE_NAME,
         );
 
         fs.copyFileSync(configPath, destinationPath);
@@ -496,7 +493,7 @@ class Alfred {
     // Attempt to load the restored settings
     const restoredConfigPath = path.join(
       this.settingsDirectory,
-      'alfredConfig.json',
+      CONFIG_FILE_NAME,
     );
 
     if (fs.existsSync(restoredConfigPath)) {
@@ -504,8 +501,8 @@ class Alfred {
         fs.readFileSync(restoredConfigPath, 'utf8'),
       );
       this.repoLocations = configJson.repos || {};
-      this.name = configJson.name || 'Wayne';
-      this.title = configJson.title || 'sir';
+      this.name = configJson.name || DEFAULT_NAME;
+      this.title = configJson.title || DEFAULT_TITLE;
     } else {
       // If no alfredConfig.json was found and copied, you might want to call this.config() or handle this case differently
       console.log(chalk.red('No previous alfredConfig.json found to restore.'));
@@ -525,12 +522,12 @@ class Alfred {
     console.log('Configuring Alfred...');
 
     // Ask for user's name
-    let name = await question("What's your name? (default: Wayne) ");
-    name = name.trim() || 'Wayne';
+    let name = await question("What's your name? (default = Wayne) ");
+    name = name.trim() || DEFAULT_NAME;
 
     // Ask for title
-    let titleInput = await question('Your title? (Default: sir) ');
-    let title = titleInput.trim() || 'sir';
+    let titleInput = await question('Your title? (default = Sir) ');
+    let title = titleInput.trim() || DEFAULT_TITLE;
     const repos: Record<string, string> = {};
     let addMore = 'yes';
 
@@ -549,7 +546,7 @@ class Alfred {
     rl.close();
 
     // Now, save these configurations to alfredConfig.json
-    const configPath = path.join(this.settingsDirectory, 'alfredConfig.json');
+    const configPath = path.join(this.settingsDirectory, CONFIG_FILE_NAME);
     const config = { name, title, repos };
 
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
